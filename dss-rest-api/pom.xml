@@ -26,91 +26,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-standalone-complete</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-									<artifactId>dss-standalone-app-package</artifactId>
-									<classifier>complete-zip</classifier>
-									<type>zip</type>
-									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
-									<destFileName>/downloads/dss-app-complete-windows-x64.zip</destFileName>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-standalone-minimal</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-									<artifactId>dss-standalone-app-package</artifactId>
-									<classifier>minimal-zip</classifier>
-									<type>zip</type>
-									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
-									<destFileName>/downloads/dss-app-minimal-windows-x64.zip</destFileName>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-			    <artifactId>maven-resources-plugin</artifactId>
-			    <executions>
-			        <execution>
-			            <id>copy-cookbook</id>
-						<phase>process-resources</phase>
-			            <goals>
-			                <goal>copy-resources</goal>
-			            </goals>
-			            <configuration>
-			                <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/doc</outputDirectory>
-			                <overwrite>true</overwrite>
-			                <resources>
-			                    <resource>
-			                        <directory>${dss.framework.root.directory}/dss-cookbook/target/generated-docs</directory>
-			                        <includes>
-			                            <include>**/*</include>
-			                            <include>*</include>
-			                        </includes>
-			                    </resource>
-			                </resources>
-			            </configuration>
-			        </execution>
-			        <execution>
-			            <id>copy-javadoc</id>
-						<phase>process-resources</phase>
-			            <goals>
-			                <goal>copy-resources</goal>
-			            </goals>
-			            <configuration>
-			                <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/apidocs</outputDirectory>
-			                <overwrite>true</overwrite>
-			                <resources>
-			                    <resource>
-			                        <directory>${dss.framework.root.directory}/target/site/apidocs</directory>
-			                        <includes>
-			                            <include>**/*</include>
-			                            <include>*</include>
-			                        </includes>
-			                    </resource>
-			                </resources>
-			            </configuration>
-			        </execution>
-			    </executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
@@ -165,16 +80,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 		</dependency>
-	    
-		<dependency>
-		    <groupId>org.thymeleaf</groupId>
-		    <artifactId>thymeleaf-spring5</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>nz.net.ultraq.thymeleaf</groupId>
-		    <artifactId>thymeleaf-layout-dialect</artifactId>
-		</dependency>
-	
+
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-mock-tsa</artifactId>
@@ -215,47 +121,6 @@
 			<artifactId>dss-crl-parser-stream</artifactId>
 		</dependency>
 
-		<!-- SOAP -->
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxws</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-signature-soap</artifactId>
-			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-validation-soap</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-certificate-validation-soap</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-server-signing-soap</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-timestamp-remote-soap</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		
 		<!-- Choose your PAdES implementation -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
