@@ -22,7 +22,7 @@ pipeline {
                 sh """
                 mvn clean install -f ${PROJECT_DIR}/pom.xml
                 mvn clean install -f ${PROJECT_DIR}/dss-mock-tsa/pom.xml
-                mvn clean package cobertura:cobertura -Dcobertura.report.format=xml -f ${PROJECT_DIR}/dss-rest-api/pom.xml
+                mvn clean package cobertura:cobertura -Dcobertura.report.format=xml -f ${PROJECT_DIR}/rest-api/pom.xml
                 """
                 junit '**/target/surefire-reports/*.xml'
                 cobertura coberturaReportFile: '**/target/site/cobertura/coverage.xml'
