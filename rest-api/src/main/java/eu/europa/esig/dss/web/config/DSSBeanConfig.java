@@ -9,7 +9,13 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.service.SecureRandomNonceSource;
+import eu.europa.esig.dss.service.http.commons.*;
+import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +35,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
-import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
-import eu.europa.esig.dss.service.http.commons.SSLCertificateLoader;
 import eu.europa.esig.dss.service.http.proxy.ProxyConfig;
 import eu.europa.esig.dss.service.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
@@ -60,7 +62,7 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 @ComponentScan(basePackages = { "eu.europa.esig.dss.web.job", "eu.europa.esig.dss.web.service" })
 @Import({ PropertiesConfig.class, CXFConfig.class, PersistenceConfig.class, ProxyConfiguration.class, WebSecurityConfig.class,
 		SchedulingConfig.class })
-@ImportResource({ "${tsp-source}" })
+//@ImportResource({ "${tsp-source}" })
 public class DSSBeanConfig {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSBeanConfig.class);
@@ -95,6 +97,18 @@ public class DSSBeanConfig {
 	@Value("${dss.server.signing.keystore.password}")
 	private String serverSigningKeystorePassword;
 
+	@Value("${tsa.url}")
+	private String TSAUrl;
+
+	@Value("${tsa.truststore.type}")
+	private String TSATrustStoreType;
+
+	@Value("${tsa.truststore.filename}")
+	private String TSATrustStoreFileName;
+
+	@Value("${tsa.truststore.password}")
+	private String TSATrustStorePassword;
+
 	@Autowired
 	private TSPSource tspSource;
 
@@ -127,6 +141,31 @@ public class DSSBeanConfig {
 	public void cachedOCSPSourceClean() throws SQLException {
 		JdbcCacheOCSPSource jdbcCacheOCSPSource = cachedOCSPSource();
 		jdbcCacheOCSPSource.destroyTable();
+	}
+
+	@Bean
+	public TSPSource tspSource() {
+		OnlineTSPSource tsp =  new OnlineTSPSource(TSAUrl);
+		tsp.setNonceSource(new SecureRandomNonceSource());
+		// Create a map with several TSPSources
+		// uses the specific content-type
+		TimestampDataLoader timestampDataLoader = new TimestampDataLoader();
+
+		TrustStrategy ts =  new TrustAllStrategy();
+
+		timestampDataLoader.setTrustStrategy(ts);
+		try {
+			LOG.info("building aped truststore");
+			DSSDocument tsfile  = new FileDocument(new ClassPathResource(TSATrustStoreFileName).getFile());
+			timestampDataLoader.setSslTruststore(tsfile);
+			timestampDataLoader.setSslTruststorePassword(TSATrustStorePassword);
+			timestampDataLoader.setSslKeystoreType(TSATrustStoreType);
+		} catch (Exception e) {
+			LOG.error("Could not load aped truststore " + e.getMessage());
+		}
+		LOG.info("APED Truststore " + timestampDataLoader.getTrustStrategy());
+		tsp.setDataLoader(timestampDataLoader);
+		return tsp;
 	}
 
 	@Bean
