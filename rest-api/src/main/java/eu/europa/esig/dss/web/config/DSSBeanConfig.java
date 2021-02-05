@@ -147,7 +147,7 @@ public class DSSBeanConfig {
 	public TSPSource tspSource() {
 		OnlineTSPSource tsp =  new OnlineTSPSource(TSAUrl);
 		tsp.setNonceSource(new SecureRandomNonceSource());
-		// Create a map with several TSPSources
+		
 		// uses the specific content-type
 		TimestampDataLoader timestampDataLoader = new TimestampDataLoader();
 
@@ -159,7 +159,7 @@ public class DSSBeanConfig {
 			DSSDocument tsfile  = new FileDocument(new ClassPathResource(TSATrustStoreFileName).getFile());
 			timestampDataLoader.setSslTruststore(tsfile);
 			timestampDataLoader.setSslTruststorePassword(TSATrustStorePassword);
-			timestampDataLoader.setSslKeystoreType(TSATrustStoreType);
+			timestampDataLoader.setSslTruststoreType(TSATrustStoreType);
 		} catch (Exception e) {
 			LOG.error("Could not load aped truststore " + e.getMessage());
 		}
