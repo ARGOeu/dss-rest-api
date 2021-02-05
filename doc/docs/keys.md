@@ -31,7 +31,7 @@
 
 `{alias}` example value : `certificate`
 
-<b>GET</b> @ <i>/services/rest/server-signing/keys/{alias}</i>
+<b>GET</b> @ <i>/services/rest/server-signing/key/{alias}</i>
 
 ### Response body
 
